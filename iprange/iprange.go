@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
 	"regexp"
 )
@@ -99,7 +100,6 @@ func doHttpRequest(url string) string {
 }
 
 func getAwsRange(body string) {
-	fmt.Println(body)
 	var aws AWS
 	if err := json.Unmarshal([]byte(body), &aws); err != nil {
 		panic(err)
@@ -163,6 +163,17 @@ func getIpRangeFromFile(provider string) error {
 	bytes, err := ioutil.ReadFile(fileName)
 	fmt.Println(string(bytes))
 	return err
+}
+
+func isIncluededInCIDR(cidr, ip string) bool {
+	_, cidrNet, err := net.ParseCIDR(cidr)
+	if err != nil {
+		log.Fatal(err)
+		return false
+	}
+
+	targetIP := net.ParseIP(ip)
+	return cidrNet.Contains(targetIP)
 }
 
 func Run(args []string) {
