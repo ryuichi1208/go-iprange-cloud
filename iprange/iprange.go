@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"regexp"
 )
 
 type AWS struct {
@@ -98,8 +99,11 @@ func doHttpRequest(url string) string {
 }
 
 func getAwsRange(body string) {
+	fmt.Println(body)
 	var aws AWS
-	json.Unmarshal([]byte(body), &aws)
+	if err := json.Unmarshal([]byte(body), &aws); err != nil {
+		panic(err)
+	}
 	for _, prefix := range aws.Prefixes {
 		fmt.Println(prefix.IPPrefix)
 	}
@@ -107,7 +111,9 @@ func getAwsRange(body string) {
 
 func getGoogleRange(body string) {
 	var gcp GCP
-	json.Unmarshal([]byte(body), &gcp)
+	if err := json.Unmarshal([]byte(body), &gcp); err != nil {
+		panic(err)
+	}
 	var ips string
 	for _, prefix := range gcp.Prefixes {
 		ips = prefix.Ipv4Prefix
@@ -119,10 +125,15 @@ func getGoogleRange(body string) {
 
 func getAzureRange(body string) {
 	var azure Azure
-	json.Unmarshal([]byte(body), &azure)
+	if err := json.Unmarshal([]byte(body), &azure); err != nil {
+		panic(err)
+	}
+	re := regexp.MustCompile(`^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])`)
 	for _, prefix := range azure.Values {
 		for _, p := range prefix.Properties.Addressprefixes {
-			fmt.Println(p)
+			if re.MatchString(p) {
+				fmt.Println(p)
+			}
 		}
 	}
 }
@@ -139,7 +150,9 @@ func getOracleRange(body string) {
 
 func getGitHubRange(body string) {
 	var github GitHub
-	json.Unmarshal([]byte(body), &github)
+	if err := json.Unmarshal([]byte(body), &github); err != nil {
+		panic(err)
+	}
 	for _, prefix := range github.Actions {
 		fmt.Println(prefix)
 	}
