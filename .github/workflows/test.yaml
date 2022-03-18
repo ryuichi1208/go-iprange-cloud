@@ -11,5 +11,5 @@ jobs:
     - name: test
       run: |
         date
-        exit 1
+        aaa # 失敗させる
         date # ここまで到達させたい        
