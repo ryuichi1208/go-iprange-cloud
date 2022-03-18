@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: test
+      shell: bash {0}
       run: |
         date
         aaa # 失敗させる
