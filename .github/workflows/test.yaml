@@ -1,16 +1,15 @@
-name: "test"
+name: Go
 on:
   push:
 
 jobs:
-  push:
+
+  build:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - shell: bash {0}
-      - name: test
-        run: |
-          date
-          exit 1
-          date # ここまで到達させたい
+    - name: test
+      run: |
+        date
+        exit 1
+        date # ここまで到達させたい        
